@@ -1,0 +1,4 @@
+[client]
+user=u1234
+password=secure
+port=4711
