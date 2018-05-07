@@ -34,8 +34,7 @@ def generate_data():
 
     utils.write_to_csv('ipboptions', headers, csv_data)
 
-    print('{0} ({1}%) wikis modified ipboptions from a total of {2}'.format(*stats))
-    print(failed_wikis)
+
 
 def fetch_revision(wiki):
     url = '{0}/w/api.php?action=query&prop=revisions&titles=MediaWiki:Ipboptions&rvprop=content&formatversion=2&format=json'.format(wiki)
@@ -49,6 +48,7 @@ def fetch_revision(wiki):
         return data['revisions'][0]['content']
 
     return None
+
 
 def get_common_lenght_options(data):
     lenght_options = re.findall('[^,:]+:([^,]+)',','.join(filter(None, data)))

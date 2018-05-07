@@ -13,7 +13,7 @@ def main():
         # run everything
         generators = [name for _, name, _ in pkgutil.iter_modules(['generators'])]
         for generator in generators:
-            # super dirty, whateves. Maybe user importlib ?
+            # super dirty, whateves. Maybe use importlib ?
             getattr(eval(generator), 'generate_data')()
 
 
