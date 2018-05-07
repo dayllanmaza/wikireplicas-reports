@@ -2,24 +2,28 @@ import os
 import csv
 import requests
 
+db_names = []
+
 def get_db_names():
-    db_names = []
-    response = requests.get('https://meta.wikimedia.org/w/api.php?action=sitematrix&format=json')
+    global db_names
 
-    if response.status_code != 200:
-        raise Exception("can't reach wikimedia api")
+    if not db_names:
+        response = requests.get('https://meta.wikimedia.org/w/api.php?action=sitematrix&format=json')
 
-    data = response.json()['sitematrix']
-    for key, val in data.items():
-        if key.isnumeric():
-            sites = val['site']
-        elif key == 'specials':
-            sites = data[key]
-        else:
-            continue
+        if response.status_code != 200:
+            raise Exception("can't reach wikimedia api")
 
-        for site in sites:
-            db_names.append(site['dbname'] + '_p')
+        data = response.json()['sitematrix']
+        for key, val in data.items():
+            if key.isnumeric():
+                sites = val['site']
+            elif key == 'specials':
+                sites = data[key]
+            else:
+                continue
+
+            for site in sites:
+                db_names.append(site['dbname'] + '_p')
 
     return db_names
 

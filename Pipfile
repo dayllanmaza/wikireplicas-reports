@@ -11,6 +11,7 @@ rope = "*"
 "flake8" = "*"
 requests = "*"
 pymysql = "*"
+phpserialize = "*"
 
 [requires]
 python_version = "3.6"

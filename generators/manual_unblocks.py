@@ -1,13 +1,8 @@
 from pymysql.cursors import DictCursor
 import conn_manager
 import utils
+from . import fetch_one, fetch_all, get_sql_time_frame
 
-# 7 days timeframe
-SQL_7_DAYS_TIME_FRAME = """
-    AND DATE_FORMAT(log_timestamp, '%Y%m%d')
-    BETWEEN DATE_FORMAT(CURRENT_DATE - INTERVAL 7 DAY, '%Y%m%d')
-        AND DATE_FORMAT(CURRENT_DATE, '%Y%m%d')
-"""
 
 def generate_data():
     print("Starting manual unblocks...")
@@ -19,11 +14,10 @@ def generate_data():
 
     #get data for each wiki
     for dbname in db_names:
-        print("Quering " + dbname)
-
         try:
-            wiki = dbname
             conn.select_db(dbname)
+
+            wiki = dbname
             total_unblocks = get_total_unblocks()
             unblock_reasons = get_common_unblock_reasons()
             perc_unblock_author = get_perc_unblock_author()
@@ -50,18 +44,15 @@ def get_common_unblock_reasons():
     %s
     GROUP BY log_comment
     ORDER BY total DESC
-    """ % SQL_7_DAYS_TIME_FRAME
+    """ % get_sql_time_frame('log_timestamp')
 
-    conn = conn_manager.get_conn()
-    with conn.cursor() as cursor:
-        cursor.execute(sql)
-        results = cursor.fetchall()
+    results = fetch_all(sql)
 
-    ret = None
+    reasons = None
     if results:
-        ret = ' | '.join([ "(%d) %s" % (val[1], str(val[0], 'utf8')) for val in results])
+        reasons = ' | '.join([ "(%d) %s" % (val[1], str(val[0], 'utf-8')) for val in results])
 
-    return ret
+    return reasons
 
 
 def get_total_unblocks():
@@ -71,15 +62,11 @@ def get_total_unblocks():
         FROM logging_userindex
         WHERE log_type = 'block' AND log_action = 'unblock'
         %s
-    """ % SQL_7_DAYS_TIME_FRAME
+    """ % get_sql_time_frame('log_timestamp')
 
-    results = ()
-    conn = conn_manager.get_conn()
-    with conn.cursor() as cursor:
-        cursor.execute(sql)
-        results = cursor.fetchone()
-
+    results = fetch_one(sql)
     return results[0] if results else 0
+
 
 def get_perc_unblock_author():
     unblocks = _get_unblocks()
@@ -92,7 +79,7 @@ def get_perc_unblock_author():
     perc = 0.0
     total_unblocks = len(unblocks)
     if total_unblocks:
-        perc = round(same_admin_unblock* 100 / total_unblocks, 2)
+        perc = round(same_admin_unblock * 100 / total_unblocks, 2)
 
     return perc
 
@@ -107,11 +94,7 @@ def _get_blocking_admin(blocked_user, log_timestamp):
         LIMIT 1
     """
 
-    results = []
-    conn = conn_manager.get_conn()
-    with conn.cursor() as cursor:
-        cursor.execute(sql, (blocked_user, log_timestamp))
-        results = cursor.fetchone()
+    results = fetch_one(sql, params=(blocked_user, log_timestamp))
 
     return results[0] if results else None
 
@@ -123,13 +106,9 @@ def _get_unblocks():
         FROM logging_logindex
         WHERE log_type = 'block' AND log_action = 'unblock'
         %s
-    """ % SQL_7_DAYS_TIME_FRAME
+    """ % get_sql_time_frame('log_timestamp')
 
-    results = []
-    conn = conn_manager.get_conn()
-    with conn.cursor(DictCursor) as cursor:
-        cursor.execute(sql)
-        results = cursor.fetchall()
+    results = fetch_all(sql, cursor=DictCursor)
 
     return results
 
