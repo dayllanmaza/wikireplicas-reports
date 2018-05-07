@@ -52,7 +52,6 @@ def generate_data():
     )
     utils.write_to_csv('blocks_per_wiki', headers, data)
 
-    print('Fin...')
 
 def get_block_length_distribution():
     sql = """
@@ -164,6 +163,6 @@ def get_common_block_reasons():
     reasons = None
     if results:
         # TODO: remove comment id <!-- 1234 -->
-        reasons = ' | '.join([ "({0}) {1}".format(val[1], str(val[0], 'utf-8')) if val[0] is not None else '' for val in results])
+        reasons = ' | '.join([ "({0}) {1}".format(val[1], str(val[0], 'utf-8')) if val[0] is not None else '' for val in results[:100]])
 
     return reasons

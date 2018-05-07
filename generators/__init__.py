@@ -27,4 +27,4 @@ def get_sql_time_frame(column_name):
             AND DATE_FORMAT(CURRENT_DATE, '%Y%m%d')
     """.format(column_name)
 
-__all__ = ['manual_unblocks', 'blocks_per_wiki', 'all_wikis', 'block_edits']
+__all__ = ['manual_unblocks', 'blocks_per_wiki', 'all_wikis', 'block_edits', 'ipboptions']

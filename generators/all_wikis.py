@@ -21,8 +21,6 @@ def generate_data():
 
     utils.write_to_csv('all_wiki', ('Total active blocks', ), [(total_blocks,)])
 
-    print('Fin...')
-
 
 def get_total_active_blocks():
     sql = """
@@ -32,5 +30,4 @@ def get_total_active_blocks():
     """
 
     results = fetch_one(sql)
-
     return results[0] if results else 0

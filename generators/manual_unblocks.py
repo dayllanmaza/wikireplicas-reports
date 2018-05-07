@@ -31,8 +31,6 @@ def generate_data():
     headers = ('Wiki', 'Total unblocks', 'Same author unblock %', 'Common unblock reasons')
     utils.write_to_csv('unblocks', headers, data)
 
-    print('Fin...')
-
 
 def get_common_unblock_reasons():
     sql = """
