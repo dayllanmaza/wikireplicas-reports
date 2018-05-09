@@ -1,6 +1,6 @@
 import conn_manager
 import utils
-from . import fetch_one
+from . import fetch_one, get_sql_time_frame
 
 def generate_data():
     print("Starting all wikis ...")
@@ -14,7 +14,6 @@ def generate_data():
     for dbname in db_names:
         try:
             conn.select_db(dbname)
-
             total_blocks += get_total_active_blocks()
         except Exception as err:
             print('Something wrong with %s, %s' % (dbname, err))
@@ -27,7 +26,9 @@ def get_total_active_blocks():
     SELECT
         COUNT(*) AS total_blocks
     FROM ipblocks
-    """
+    WHERE 1=1
+    %s
+    """ % get_sql_time_frame('ipb_timestamp')
 
     results = fetch_one(sql)
     return results[0] if results else 0
