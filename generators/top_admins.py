@@ -44,6 +44,7 @@ def generate_data():
                 SELECT
                     '%s' AS wiki,
                     CAST(log_user_text as CHAR) as user,
+                    log_user,
                     (
                         SELECT IF (COUNT(*) > 0, 'No', 'Yes')
                         FROM user_properties
@@ -68,5 +69,5 @@ def generate_data():
             print('Something wrong with %s, %s' % (dbname, err))
 
     # create csv
-    headers = ('wiki', 'username', 'allow email', '# blocks performed')
+    headers = ('wiki', 'username', 'user id', 'allow email', '# blocks performed')
     utils.write_to_csv('top_admins', headers, data)
