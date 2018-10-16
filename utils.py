@@ -54,7 +54,7 @@ def get_wikis_url():
 def write_to_csv(filename, headers, data):
     print('Generating CSV: ' + filename)
     data_folder = os.path.dirname(os.path.abspath(__file__)) + '/data/'
-    with open(data_folder + filename + '.csv', 'w') as csvfile:
+    with open(data_folder + filename + '.csv', 'w', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile, dialect='excel')
 
         writer.writerow(headers)
