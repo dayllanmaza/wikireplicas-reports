@@ -1,2 +1,3 @@
 replica.my.cnf
 data/*
+__pycache__/
